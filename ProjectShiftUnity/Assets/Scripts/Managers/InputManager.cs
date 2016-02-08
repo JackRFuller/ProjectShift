@@ -35,7 +35,12 @@ public class InputManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        DetectSwipe();
+		//Check that the player can move the shape
+		if(LevelManager.instance.movesAvailableForLevel > 0)
+		{
+			DetectSwipe();
+		}
+       
 	}
 
     void DetectSwipe()
@@ -118,5 +123,7 @@ public class InputManager : MonoBehaviour {
             Debug.Log("Swipe Right");
             currentPlayer.SendMessage("MovePlayer", "Right", SendMessageOptions.DontRequireReceiver);
         }
+
+		LevelManager.instance.movesAvailableForLevel--;
     }
 }
