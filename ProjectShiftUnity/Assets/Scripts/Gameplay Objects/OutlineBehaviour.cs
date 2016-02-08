@@ -4,14 +4,12 @@ using System.Collections;
 public class OutlineBehaviour : MonoBehaviour {
 
 	private SpriteRenderer sr;
-	private Color currentColor;
+	private Color currentColor;	
 
-	// Use this for initialization
-	void Start () {
-
-		Init();
-	
-	}
+    void OnEnable()
+    {
+        Init();
+    }
 
 	void Init()
 	{
@@ -32,6 +30,10 @@ public class OutlineBehaviour : MonoBehaviour {
 
 			if(gameObject.tag == other.tag)
 				numOfGemsEarned++;
+
+            FreezePlayerShape(other.transform);
+
+           
 						
 		}
 		else
@@ -39,5 +41,13 @@ public class OutlineBehaviour : MonoBehaviour {
 			Destroy(other.gameObject);
 		}
 	}
+
+    void FreezePlayerShape(Transform playerShape)
+    {
+        playerShape.parent = transform;
+        playerShape.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        playerShape.localPosition = Vector3.zero;
+        playerShape.localRotation = transform.localRotation;
+    }
 
 }
