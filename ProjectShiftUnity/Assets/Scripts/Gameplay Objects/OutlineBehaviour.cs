@@ -14,6 +14,7 @@ public class OutlineBehaviour : MonoBehaviour {
 	void Init()
 	{
 		sr = GetComponent<SpriteRenderer>();
+        GetComponent<Animator>().enabled = true;
 		currentColor = sr.color;
 	}
 
@@ -33,7 +34,11 @@ public class OutlineBehaviour : MonoBehaviour {
 
             FreezePlayerShape(other.transform);
 
-           
+            //Trigger Level Complete
+            
+            LevelHolderBehaviour lhScript = transform.parent.root.GetComponent<LevelHolderBehaviour>();
+            lhScript.StartMoving(1);
+            WaveManager.instance.BringInNextLevel();
 						
 		}
 		else
@@ -44,6 +49,7 @@ public class OutlineBehaviour : MonoBehaviour {
 
     void FreezePlayerShape(Transform playerShape)
     {
+        GetComponent<Animator>().enabled = false;
         playerShape.parent = transform;
         playerShape.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         playerShape.localPosition = Vector3.zero;

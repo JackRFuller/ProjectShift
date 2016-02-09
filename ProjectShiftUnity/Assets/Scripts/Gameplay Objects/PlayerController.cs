@@ -44,6 +44,12 @@ public class PlayerController : MonoBehaviour {
 
         rb.AddForce(_movementDirection * Time.deltaTime, ForceMode2D.Force);
 
-        Debug.Log("hit");
+    }
+
+    public void ResetShape()
+    {
+        transform.parent = null;
+        transform.eulerAngles =  Vector3.zero;
+        gameObject.SetActive(false);
     }
 }
