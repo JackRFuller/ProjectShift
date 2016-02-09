@@ -67,6 +67,9 @@ public class WaveManager : MonoBehaviour {
         string objectsTag = PullObjectTag(outlineToLoad);
         GameObject outline = PullOutlines(objectsTag);
 
+		Color _generatedColour = objectColours[Random.Range(1,5)];
+		outline.GetComponent<SpriteRenderer>().color = _generatedColour;
+
         //Pull Level Holder
         GameObject levelHolder = LevelHolder();
 
@@ -78,10 +81,14 @@ public class WaveManager : MonoBehaviour {
         GameObject playerShape = PullPlayerShape(objectsTag);
         playerShape.transform.parent = levelHolder.transform;
         playerShape.transform.localPosition = Vector3.zero;
+		playerShape.GetComponent<SpriteRenderer>().color = _generatedColour;
 
         levelHolder.SetActive(true);
         outline.SetActive(true);
         playerShape.SetActive(true);
+
+		//Set Current Player
+		InputManager.instance.currentPlayer = playerShape;
     }
 
     GameObject PullPlayerShape(string playerShapeID)
@@ -145,7 +152,7 @@ public class WaveManager : MonoBehaviour {
 
         return outline;
     }
-    
+
     GameObject LevelHolder()
     {
         GameObject levelHolder = null;
