@@ -17,6 +17,9 @@ public class WaveManager : MonoBehaviour {
     private List<GameObject> levels = new List<GameObject>();
     private List<GameObject> playerShapes = new List<GameObject>();
 
+    [Tooltip("Used To Hold the Current Level + 1")]
+    private int tempWaveNum;
+
     void Awake()
     {
         if (instance == null)
@@ -29,14 +32,22 @@ public class WaveManager : MonoBehaviour {
         }
     }	
 
+    void Start()
+    {
+        tempWaveNum = LevelManager.instance.currentLevel;
+    }
+
     //Work out where the player is in terms of current level against level balancing
    public void DetermineLevelType()
     {
+        //DebugText
+        ManagerForDebugs.instance.WaveInit();     
+
         if(levels.Count < 2)
         {
             for (int i = 0; i < levelLimits.Length; i++)
             {
-                if (LevelManager.instance.currentLevel >= levelLimits[i] && LevelManager.instance.currentLevel < levelLimits[i + 1])
+                if (tempWaveNum >= levelLimits[i] && tempWaveNum < levelLimits[i + 1])
                 {
                     LoadInLevelType(i);
                     break;
@@ -78,6 +89,10 @@ public class WaveManager : MonoBehaviour {
 
     void LoadOneShapedLevel()
     {
+        //DebugLevelType
+        ManagerForDebugs.instance.WaveType("One Shape");
+
+
         //Pull Outline
         int outlineToLoad = Random.Range(0, SpawnManager.instance.outlinePrefabs.Length);
         string objectsTag = PullObjectTag(outlineToLoad);
@@ -111,7 +126,7 @@ public class WaveManager : MonoBehaviour {
             outline.SetActive(true);
             playerShape.SetActive(true);
 
-            LevelManager.instance.currentLevel++;
+            tempWaveNum++;
 
             //Adds Level To List
             levels.Add(levelHolder);
@@ -123,13 +138,18 @@ public class WaveManager : MonoBehaviour {
 
             //Adds Level To List
             levels.Add(levelHolder);
-        }		
+        }
+
+        Debug.Log("Loaded Wave 1");	
 
         
     }
 
     void LoadInTwoShapedLevel()
     {
+        //DebugLevelType
+       ManagerForDebugs.instance.WaveType("Two Shapes");
+
         //Enable Checks
         List<GameObject> outlines = new List<GameObject>();
         List<Vector3> spawnedPositions = new List<Vector3>();
@@ -210,7 +230,7 @@ public class WaveManager : MonoBehaviour {
             //Set Current Player
             playerShapes.Add(playerShape);
             InputManager.instance.currentPlayer = playerShape;
-            LevelManager.instance.currentLevel++;
+            tempWaveNum++;
             //Adds Level To List
             levels.Add(levelHolder);
 

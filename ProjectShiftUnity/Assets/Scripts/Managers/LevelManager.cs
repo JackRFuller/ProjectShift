@@ -26,6 +26,7 @@ public class LevelManager : MonoBehaviour {
 	void Start()
 	{
 		Init();
+        Debug.Log("Init");
 	}
 
 	void Init()
@@ -33,12 +34,16 @@ public class LevelManager : MonoBehaviour {
 		//Setup Next Level Delegate
 		initNextLevel += IncrementCurrentLevel;
 		initNextLevel += ResetNumberOfMovesAvailable;
+
+        ManagerForDebugs.instance.GameStarted();
+        Debug.Log("Game Started");
 	}
 
-	void IncrementCurrentLevel()
-	{
+	public void IncrementCurrentLevel()
+	{        
 		currentLevel++;
-	}
+        ManagerForDebugs.instance.WaveNumber(currentLevel);
+    }
 
 
 	void ResetNumberOfMovesAvailable()

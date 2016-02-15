@@ -33,19 +33,24 @@ public class SpawnManager : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+
+        
+
     }
 
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start ()
+    {
 
         Init();
-	
-	}
+    }
 
     void Init()
     {
         SpawnInItems();
+
+        //Debug Spawning
+        ManagerForDebugs.instance.SpawningInit();
     }
 
     void SpawnInItems()
@@ -100,6 +105,9 @@ public class SpawnManager : MonoBehaviour {
                 shapes.Add(_playerShape);
             }
         }
+
+        //DebugPooledItems
+        ManagerForDebugs.instance.SpawnedObjects();
 
         //Test
         WaveManager.instance.DetermineLevelType();
