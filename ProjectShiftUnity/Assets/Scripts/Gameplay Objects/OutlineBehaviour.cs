@@ -31,12 +31,12 @@ public class OutlineBehaviour : MonoBehaviour {
 	{
 		Color _objectsColour = other.GetComponent<SpriteRenderer>().color;
 
-		if(currentColor == _objectsColour || gameObject.tag == other.tag)
+		if(gameObject.tag == other.tag)
 		{
 			int numOfGemsEarned = 0;
 
-			if(currentColor == _objectsColour)
-				numOfGemsEarned++;
+//			if(currentColor == _objectsColour)
+//				numOfGemsEarned++;
 
 			if(gameObject.tag == other.tag)
 				numOfGemsEarned++;
@@ -45,6 +45,9 @@ public class OutlineBehaviour : MonoBehaviour {
 
             //Trigger Level Complete
             LevelManager.instance.IncrementCurrentLevel();
+
+			//Add On Score
+			LevelManager.instance.IncremementScore();
 
             LevelHolderBehaviour lhScript = transform.parent.root.GetComponent<LevelHolderBehaviour>();
             lhScript.StartMoving(1);

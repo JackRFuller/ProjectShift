@@ -104,23 +104,23 @@ public class InputManager : MonoBehaviour {
         // Swipe up
         if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
         {
-            Debug.Log("Swipe Up");
+            //Debug.Log("Swipe Up");
             currentPlayer.SendMessage("MovePlayer", "Up", SendMessageOptions.DontRequireReceiver);
 
         }
         else if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
         {
-            Debug.Log("Swipe Down");
+            //Debug.Log("Swipe Down");
             currentPlayer.SendMessage("MovePlayer", "Down", SendMessageOptions.DontRequireReceiver);
         }
         else if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
         {
-            Debug.Log("Swipe Left");
+            //Debug.Log("Swipe Left");
             currentPlayer.SendMessage("MovePlayer", "Left", SendMessageOptions.DontRequireReceiver);
         }
         else if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
         {
-            Debug.Log("Swipe Right");
+            //Debug.Log("Swipe Right");
             currentPlayer.SendMessage("MovePlayer", "Right", SendMessageOptions.DontRequireReceiver);
         }
 

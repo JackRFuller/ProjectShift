@@ -4,7 +4,7 @@ using System.Collections;
 public class TimeManager : MonoBehaviour {
 
 	[Header("Time Attributes")]
-	public float startingTime = 5.00F;
+	public float startingTime;
 	private float timer;
 
 	// Use this for initialization

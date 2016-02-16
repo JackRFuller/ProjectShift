@@ -9,8 +9,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: New Unity Project
+  companyName: J.R.F Productions
+  productName: Mainframe
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_ShowUnitySplashScreen: 1
@@ -89,7 +89,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleIdentifier: com.test.test
+  bundleIdentifier: com.JRFProductions.Mainframe
   bundleVersion: 1.0
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
@@ -98,7 +98,7 @@ PlayerSettings:
   virtualRealitySupported: 0
   productGUID: 06e02183f39bb9e4599989b683a7c70f
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 9
+  AndroidMinSdkVersion: 14
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   apiCompatibilityLevel: 2
@@ -160,7 +160,7 @@ PlayerSettings:
   androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
-  AndroidTVCompatibility: 1
+  AndroidTVCompatibility: 0
   AndroidIsGame: 1
   androidEnableBanner: 1
   m_AndroidBanners:
@@ -426,9 +426,17 @@ PlayerSettings:
   XboxOnePersistentLocalStorageSize: 0
   intPropertyNames:
   - Android::ScriptingBackend
+  - Standalone::ScriptingBackend
   - WebPlayer::ScriptingBackend
+  - iOS::Architecture
+  - iOS::EnableIncrementalBuildSupportForIl2cpp
+  - iOS::ScriptingBackend
   Android::ScriptingBackend: 0
+  Standalone::ScriptingBackend: 0
   WebPlayer::ScriptingBackend: 0
+  iOS::Architecture: 2
+  iOS::EnableIncrementalBuildSupportForIl2cpp: 1
+  iOS::ScriptingBackend: 1
   boolPropertyNames:
   - XboxOne::enus
   XboxOne::enus: 1

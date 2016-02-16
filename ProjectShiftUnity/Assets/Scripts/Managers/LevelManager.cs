@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour {
 
 	[Header("Level Attributes")]
 	public int currentLevel = 0;
+	public int score;
 	public int movesAvailableForLevel = 0;
 	public delegate void nextLevel();
 	public nextLevel initNextLevel;
@@ -25,8 +26,7 @@ public class LevelManager : MonoBehaviour {
 
 	void Start()
 	{
-		Init();
-        Debug.Log("Init");
+		Init();       
 	}
 
 	void Init()
@@ -35,8 +35,7 @@ public class LevelManager : MonoBehaviour {
 		initNextLevel += IncrementCurrentLevel;
 		initNextLevel += ResetNumberOfMovesAvailable;
 
-        ManagerForDebugs.instance.GameStarted();
-        Debug.Log("Game Started");
+        ManagerForDebugs.instance.GameStarted();        
 	}
 
 	public void IncrementCurrentLevel()
@@ -44,6 +43,11 @@ public class LevelManager : MonoBehaviour {
 		currentLevel++;
         ManagerForDebugs.instance.WaveNumber(currentLevel);
     }
+
+	public void IncremementScore()
+	{
+		score++;
+	}
 
 
 	void ResetNumberOfMovesAvailable()
