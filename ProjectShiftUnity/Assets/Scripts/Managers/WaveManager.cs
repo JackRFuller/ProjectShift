@@ -9,6 +9,7 @@ public class WaveManager : MonoBehaviour {
     [Header("Object Attributes")]
     public Color[] objectColours = new Color[5];
     public Vector3[] outlineSpawnPos = new Vector3[4];
+    public Vector3[] shapeShifterSpawnPos = new Vector3[4];
     public Vector3[] levelHolderSpawns = new Vector3[2];
 
     [Header("Level Balancing Attributes")]
@@ -19,6 +20,14 @@ public class WaveManager : MonoBehaviour {
 
     [Tooltip("Used To Hold the Current Level + 1")]
 	public int tempWaveNum;
+    private List<int> generatedOutlines = new List<int>();
+    private List<int> generatedOutlinePos = new List<int>();
+    private List<int> generatedShapeShifters = new List<int>();
+
+    //Shape Shifter Lists
+    private List<GameObject> outlines = new List<GameObject>();
+    private List<string> outlineTags = new List<string>();
+    private List<Vector3> shapeShifterPos = new List<Vector3>();
 
     void Awake()
     {
@@ -35,6 +44,8 @@ public class WaveManager : MonoBehaviour {
     void Start()
     {
         tempWaveNum = LevelManager.instance.currentLevel;
+        generatedOutlines = new List<int>();
+        generatedOutlinePos = new List<int>();
     }
 
     //Work out where the player is in terms of current level against level balancing
@@ -61,6 +72,7 @@ public class WaveManager : MonoBehaviour {
     void LoadInLevelType(int _levelID)
     {
 		int _numOfOutlines = 0;
+        bool isGeneratingShapeShifters = true;
 
         switch (_levelID)
         {
@@ -69,7 +81,6 @@ public class WaveManager : MonoBehaviour {
                 break;
             case (1):
 			_numOfOutlines = 2;
-			Debug.Log("Hit");
                 break;
             case (2):
 			_numOfOutlines = 3;
@@ -84,7 +95,7 @@ public class WaveManager : MonoBehaviour {
 
 		//Debug.Log(_numOfOutlines);
 
-		WaveGenerator(_numOfOutlines);
+		WaveGenerator(_numOfOutlines, isGeneratingShapeShifters);
     }
 
     public void BringInNextLevel()
@@ -99,178 +110,14 @@ public class WaveManager : MonoBehaviour {
         DetermineLevelType();
     }
 
-//    void LoadOneShapedLevel()
-//    {
-//        //DebugLevelType
-//        ManagerForDebugs.instance.WaveType("One Shape");
-//
-//
-//        //Pull Outline
-//        int outlineToLoad = Random.Range(0, SpawnManager.instance.outlinePrefabs.Length);
-//        string objectsTag = PullObjectTag(outlineToLoad);
-//        GameObject outline = PullOutlines(objectsTag);
-//
-//		Color _generatedColour = objectColours[Random.Range(1,5)];
-//		outline.GetComponent<SpriteRenderer>().color = _generatedColour;
-//
-//        //Pull Level Holder
-//        GameObject levelHolder = LevelHolder();
-//
-//        //Set Outline Position
-//        outline.transform.parent = levelHolder.transform;
-//        outline.transform.localPosition = outlineSpawnPos[Random.Range(0, outlineSpawnPos.Length)];
-//
-//        //Pull Player Shape & Set Pos
-//        GameObject playerShape = PullPlayerShape(objectsTag);
-//        playerShape.transform.parent = levelHolder.transform;
-//        playerShape.transform.localPosition = Vector3.zero;
-//		playerShape.GetComponent<SpriteRenderer>().color = _generatedColour;
-//
-//       if(levels.Count == 0)
-//        {
-//            //Set Current Player
-//            playerShapes.Add(playerShape);
-//            InputManager.instance.currentPlayer = playerShape;
-//
-//            levelHolder.transform.position = levelHolderSpawns[0];
-//
-//            levelHolder.SetActive(true);
-//            outline.SetActive(true);
-//            playerShape.SetActive(true);
-//
-//            tempWaveNum++;
-//
-//            //Adds Level To List
-//            levels.Add(levelHolder);
-//            DetermineLevelType();            
-//        }
-//        else
-//        {
-//            levelHolder.transform.position = levelHolderSpawns[1];
-//
-//            //Adds Level To List
-//            levels.Add(levelHolder);
-//        }
-//
-//        Debug.Log("Loaded Wave 1");	
-//
-//        
-//    }
-
-//    void LoadInTwoShapedLevel()
-//    {
-//        //DebugLevelType
-//        ManagerForDebugs.instance.WaveType("Two Shapes");
-//
-//        //Enable Checks
-//        List<GameObject> outlines = new List<GameObject>();
-//        List<Vector3> spawnedPositions = new List<Vector3>();
-//
-//        GameObject levelHolder = LevelHolder();
-//        GameObject outline;
-//        string objectsTag = "";
-//        Color _generatedColour = Color.white;
-//
-//        for (int i = 0; i < 2; i++)
-//        {
-//            //Choose Random Outline
-//            int outlineToLoad = Random.Range(0, SpawnManager.instance.outlinePrefabs.Length);
-//            objectsTag = PullObjectTag(outlineToLoad);
-//            outline = PullOutlines(objectsTag);
-//
-//            //Check That The Outline Hasn't Been Chosen Already
-//            if (outlines.Count == 0 )
-//            {
-//                outline.transform.parent = levelHolder.transform;
-//                outline.transform.localPosition = outlineSpawnPos[Random.Range(0, outlineSpawnPos.Length)];
-//                _generatedColour = objectColours[Random.Range(1, 5)];
-//                outline.GetComponent<SpriteRenderer>().color = _generatedColour;
-//
-//                outline.SetActive(true);
-//                outlines.Add(outline);                
-//            }
-//            else
-//            {
-//                SpriteRenderer outlineSprite = outline.GetComponent<SpriteRenderer>();
-//                //Check it isn't the same shape
-//                while (outlineSprite.sprite == outlines[0].GetComponent<SpriteRenderer>().sprite)
-//                {
-//                    outlineToLoad = Random.Range(0, SpawnManager.instance.outlinePrefabs.Length);
-//                    objectsTag = PullObjectTag(outlineToLoad);
-//                    outline = PullOutlines(objectsTag);
-//                    outlineSprite = outline.GetComponent<SpriteRenderer>();
-//                }
-//               
-//                outline.transform.parent = levelHolder.transform;
-//                outline.transform.localPosition = outlineSpawnPos[Random.Range(0, outlineSpawnPos.Length)];
-//
-//                ////Check that it isn't in the same location
-//                while (outline.transform.localPosition == outlines[0].transform.localPosition)
-//                {
-//                    outline.transform.localPosition = outlineSpawnPos[Random.Range(0, outlineSpawnPos.Length)];
-//                }
-//
-//                _generatedColour = objectColours[Random.Range(1, 5)];
-//                outlineSprite.color = _generatedColour;
-//
-//                ////Check that it isn't the same colour
-//                while (outlineSprite.color == outlines[0].GetComponent<SpriteRenderer>().color)
-//                {
-//                    _generatedColour = objectColours[Random.Range(1, 5)];
-//                    outlineSprite.color = _generatedColour;
-//                }
-//
-//                outline.SetActive(true);
-//                outlines.Add(outline);
-//            }
-//        }
-//
-//        //Pull Player Shape & Set Pos
-//        GameObject playerShape = PullPlayerShape(objectsTag);
-//        playerShape.transform.parent = levelHolder.transform;
-//        playerShape.transform.localPosition = Vector3.zero;
-//		playerShape.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 5)];
-//
-//        if(levels.Count == 0)
-//        {
-//            levelHolder.transform.position = levelHolderSpawns[0];
-//
-//            levelHolder.SetActive(true);
-//            playerShape.SetActive(true);
-//
-//            //Set Current Player
-//            playerShapes.Add(playerShape);
-//            InputManager.instance.currentPlayer = playerShape;
-//            tempWaveNum++;
-//            //Adds Level To List
-//            levels.Add(levelHolder);
-//
-//            DetermineLevelType();
-//
-//            
-//        }
-//        else
-//        {
-//            playerShapes.Add(playerShape);
-//            levelHolder.transform.position = levelHolderSpawns[1];
-//            playerShape.SetActive(true);
-//            //Adds Level To List
-//            levels.Add(levelHolder);
-//        }
-//    }
-
-	void WaveGenerator(int numOfOutlines)
+	void WaveGenerator(int numOfOutlines, bool isGeneratingShapeShifters)
 	{
 		tempWaveNum++;
 
 		//Debug Wave Type
-		ManagerForDebugs.instance.WaveType("Num of Outlines: " + numOfOutlines.ToString());
-
-		//Create Lists To Hold Generated Items
-		List<int> generatedOutlines = new List<int>();
-		List<int> generatedOutlinePos = new List<int>();
+		ManagerForDebugs.instance.WaveType("Num of Outlines: " + numOfOutlines.ToString());	
+        		
 		//Generate Level Holder
-
 		GameObject _levelHolder = LevelHolder();
 
 		//Generate Outline
@@ -321,8 +168,7 @@ public class WaveManager : MonoBehaviour {
 
 			}
 			else
-			{
-				
+			{				
 				while(generatedOutlines.Contains(outlineToLoad))
 				{
 					outlineToLoad = Random.Range(0, SpawnManager.instance.outlinePrefabs.Length);
@@ -363,11 +209,95 @@ public class WaveManager : MonoBehaviour {
 				//Add OutlinePos To The List
 				generatedOutlinePos.Add(_outlinePos);
 			}
+
+            outlines.Add(outline);
 		}
 
+        //Spawn In Shape Shifters
+        if(isGeneratingShapeShifters)
+        {
+            //Choose Correct Shape for shifting
+            int _correctShapeShift = Random.Range(0, generatedOutlines.Count);
 
-		//Pull Player Shape & Set Pos
-		GameObject playerShape = PullPlayerShape(_outlineTag);
+            //Add Correct Shape To the list
+            generatedShapeShifters.Add(_correctShapeShift);
+
+            //Pull Shape Shift To Spawn
+            string _shapeShift = outlines[_correctShapeShift].tag;
+
+            //Add Generated Tag to List
+            outlineTags.Add(_shapeShift);       
+
+            GameObject _shapeShifter = PullShapeShifter(_shapeShift);           
+
+            //Determine Position To Spawn
+            for(int i =0; i < outlineSpawnPos.Length; i++)
+            {
+                if(outlines[_correctShapeShift].transform.localPosition == outlineSpawnPos[i])
+                {
+                    //Assign To Level Holder
+                    _shapeShifter.transform.parent = _levelHolder.transform;
+                    _shapeShifter.transform.localPosition = shapeShifterSpawnPos[i];
+                    shapeShifterPos.Add(shapeShifterSpawnPos[i]);
+                    break;
+                }
+            }
+
+            //Assign Random Colour
+            _shapeShifter.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 5)];
+
+            //Set Shape Shifter As Active
+            _shapeShifter.SetActive(true);
+
+            //Check that there isn't just one outline
+            if(generatedOutlines.Count > 1)
+            {
+                for(int j = 0; j < generatedOutlines.Count - 1; j++)
+                {
+                    int shapeShifterID = Random.Range(0, generatedOutlines.Count);
+                    _shapeShift = outlines[shapeShifterID].tag;
+
+                    //Check that Random Number Hasn't been pulled already
+                    while (outlineTags.Contains(_shapeShift))
+                    {
+                        shapeShifterID = Random.Range(0, generatedOutlines.Count);
+                        _shapeShift = outlines[shapeShifterID].tag;
+                    }
+
+                    //Add Generated Tag to List
+                    outlineTags.Add(_shapeShift);
+
+                    //Pull Shape Shifter
+                    _shapeShifter = PullShapeShifter(_shapeShift);
+
+                    int _spawnPosID = 0;
+                    Vector3 _spawnPos = Vector3.zero;
+
+                    //Determine Position To Spawn
+                    for (int i = 0; i < numOfOutlines - 1; i++)
+                    {
+                        _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
+                        _spawnPos = shapeShifterSpawnPos[_spawnPosID];
+
+                        //Check that the spawn position isn't already taken
+                        while (shapeShifterPos.Contains(_spawnPos) || outlines[_spawnPosID].tag == _shapeShift)
+                        {
+                            _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
+                            _spawnPos = shapeShifterSpawnPos[_spawnPosID];
+                        }                       
+                    }
+
+
+                }
+            }
+        }
+
+        outlines.Clear();
+        generatedOutlines.Clear();
+        generatedOutlinePos.Clear();
+
+        //Pull Player Shape & Set Pos
+        GameObject playerShape = PullPlayerShape(_outlineTag);
 		playerShape.transform.parent = _levelHolder.transform;
 		playerShape.transform.localPosition = Vector3.zero;
 		playerShape.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 5)];
@@ -396,6 +326,8 @@ public class WaveManager : MonoBehaviour {
 			//Adds Level To List
 			levels.Add(_levelHolder);
 		}
+
+       
 	}
 
     void DetermineIfNextLevelShouldBeSpawnedIn()
@@ -404,6 +336,27 @@ public class WaveManager : MonoBehaviour {
         {
             DetermineLevelType();
         }
+    }
+
+    GameObject PullShapeShifter(string shapeShifterID)
+    {
+        GameObject _shapeShifter = null;
+
+        for (int i = 0; i < SpawnManager.instance.shapeShifters.Count; i++)
+        {
+            ShapeShifterBehaviour ssb = SpawnManager.instance.shapeShifters[i].GetComponent<ShapeShifterBehaviour>();
+
+            if(ssb.shapeTag == shapeShifterID)
+            {
+                if (!SpawnManager.instance.shapeShifters[i].activeInHierarchy)
+                {                    
+                    _shapeShifter = SpawnManager.instance.shapeShifters[i];
+                    return _shapeShifter;
+                }
+            }
+        }
+
+        return _shapeShifter;
     }
 
     GameObject PullPlayerShape(string playerShapeID)
@@ -416,7 +369,7 @@ public class WaveManager : MonoBehaviour {
             {
                 if (!SpawnManager.instance.shapes[i].activeInHierarchy)
                 {
-                    _playerShape = SpawnManager.instance.shapes[i];
+                    _playerShape = SpawnManager.instance.shapes[i];                    
                     return _playerShape;
                 }
             }

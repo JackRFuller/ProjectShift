@@ -23,6 +23,12 @@ public class SpawnManager : MonoBehaviour {
     public GameObject shapeTidy;
     [HideInInspector] public List<GameObject> shapes;
 
+    [Header("Shape Shifters")]
+    public GameObject[] shapeShifterPrefabs = new GameObject[4];
+    [SerializeField] private int numberOfShapeShiftersToSpawn;
+    public GameObject shapeShiftTidy;
+    public List<GameObject> shapeShifters;
+
     void Awake()
     {
         if(instance == null)
@@ -60,6 +66,8 @@ public class SpawnManager : MonoBehaviour {
         SpawnInOutlines();
 
         SpawnInPlayerShapes();
+
+        SpawnInShapeShifters();
     }
 
     void SpawnInLevelHolders()
@@ -94,15 +102,41 @@ public class SpawnManager : MonoBehaviour {
     {
         shapes = new List<GameObject>();
 
+
+
         for(int i = 0; i < shapePrefabs.Length; i++)
         {
-            for(int j = 0; j < numberOfShapesToSpawn; j++)
+            
+
+            for (int j = 0; j < numberOfShapesToSpawn; j++)
             {
+
+                
                 GameObject _playerShape = Instantiate(shapePrefabs[i]) as GameObject;
                 _playerShape.transform.parent = shapeTidy.transform;
                 _playerShape.transform.localPosition = Vector3.zero;
                 _playerShape.SetActive(false);
                 shapes.Add(_playerShape);
+            }
+        }
+
+      
+    }
+
+    void SpawnInShapeShifters()
+    {
+        shapeShifters = new List<GameObject>();
+
+        for(int i = 0; i < shapeShifterPrefabs.Length; i++)
+        {
+            for (int j = 0; j < numberOfShapeShiftersToSpawn; j++)
+            {
+                GameObject _shapeShifter = Instantiate(shapeShifterPrefabs[i]) as GameObject;
+                _shapeShifter.transform.parent = shapeShiftTidy.transform;
+                _shapeShifter.transform.localPosition = Vector3.zero;
+                shapeShifters.Add(_shapeShifter);
+                _shapeShifter.SetActive(false);
+                
             }
         }
 
@@ -117,7 +151,7 @@ public class SpawnManager : MonoBehaviour {
     {
         for(int i = 0; i < outlines.Count; i++)
         {
-            outlines[i].transform.parent = outlineTidy.transform.parent;
+            outlines[i].transform.parent = outlineTidy.transform;
             outlines[i].transform.localPosition = Vector3.zero;
             outlines[i].SetActive(false);            
         }
@@ -127,7 +161,7 @@ public class SpawnManager : MonoBehaviour {
     {
         for(int i = 0; i < shapes.Count; i++)
         {
-            shapes[i].transform.parent = shapeTidy.transform.parent;
+            shapes[i].transform.parent = shapeTidy.transform;
             shapes[i].transform.localPosition = Vector3.zero;
             shapes[i].SetActive(false);
         }
@@ -139,6 +173,16 @@ public class SpawnManager : MonoBehaviour {
         {
             levelHolders[i].transform.position = new Vector3(0, -14, 0);
             levelHolders[i].SetActive(false);
+        }
+    }
+
+    void ResetShapeHolders()
+    {
+        for(int i = 0; i < shapeShifters.Count; i++)
+        {
+            shapeShifters[i].transform.parent = shapeShiftTidy.transform;
+            shapeShifters[i].transform.localPosition = Vector3.zero;
+            shapeShifters[i].SetActive(false);
         }
     }
 	
