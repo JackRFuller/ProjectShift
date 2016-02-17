@@ -279,12 +279,12 @@ public class WaveManager : MonoBehaviour {
                         _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
                         _spawnPos = shapeShifterSpawnPos[_spawnPosID];
 
-                        //Check that the spawn position isn't already taken
-                        while (shapeShifterPos.Contains(_spawnPos) || outlines[_spawnPosID].tag == _shapeShift)
-                        {
-                            _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
-                            _spawnPos = shapeShifterSpawnPos[_spawnPosID];
-                        }                       
+                        ////Check that the spawn position isn't already taken
+                        //while (shapeShifterPos.Contains(_spawnPos) || outlines[_spawnPosID].tag == _shapeShift)
+                        //{
+                        //    _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
+                        //    _spawnPos = shapeShifterSpawnPos[_spawnPosID];
+                        //}                       
                     }
 
 
