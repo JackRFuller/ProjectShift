@@ -249,46 +249,63 @@ public class WaveManager : MonoBehaviour {
             //Set Shape Shifter As Active
             _shapeShifter.SetActive(true);
 
+			Debug.Log(generatedOutlines.Count);
+
             //Check that there isn't just one outline
             if(generatedOutlines.Count > 1)
             {
-                for(int j = 0; j < generatedOutlines.Count - 1; j++)
-                {
-                    int shapeShifterID = Random.Range(0, generatedOutlines.Count);
-                    _shapeShift = outlines[shapeShifterID].tag;
+				//Determine the number of remaining outlines
+				int numOfRemainingOutlines = generatedOutlines.Count;
 
-                    //Check that Random Number Hasn't been pulled already
-                    while (outlineTags.Contains(_shapeShift))
-                    {
-                        shapeShifterID = Random.Range(0, generatedOutlines.Count);
-                        _shapeShift = outlines[shapeShifterID].tag;
-                    }
-
-                    //Add Generated Tag to List
-                    outlineTags.Add(_shapeShift);
-
-                    //Pull Shape Shifter
-                    _shapeShifter = PullShapeShifter(_shapeShift);
-
-                    int _spawnPosID = 0;
-                    Vector3 _spawnPos = Vector3.zero;
-
-                    //Determine Position To Spawn
-                    for (int i = 0; i < numOfOutlines - 1; i++)
-                    {
-                        _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
-                        _spawnPos = shapeShifterSpawnPos[_spawnPosID];
-
-                        ////Check that the spawn position isn't already taken
-                        //while (shapeShifterPos.Contains(_spawnPos) || outlines[_spawnPosID].tag == _shapeShift)
-                        //{
-                        //    _spawnPosID = Random.Range(0, shapeShifterSpawnPos.Length);
-                        //    _spawnPos = shapeShifterSpawnPos[_spawnPosID];
-                        //}                       
-                    }
+				for(int j = 0; j < numOfRemainingOutlines;j++)
+				{
+					//Pull Outline to Place Shape Shifter
+					int shapeShifterID = Random.Range(0,generatedOutlines.Count);
+					_shapeShift = outlines[shapeShifterID].tag;
 
 
-                }
+					//Check that that Outline doesn't already have a shape shifter assigned to it
+					while(outlineTags.Contains(_shapeShift))
+					{
+						shapeShifterID = Random.Range(0,generatedOutlines.Count);
+						_shapeShift = outlines[shapeShifterID].tag;	
+					}
+
+					int _newShapeID = shapeShifterID;
+
+					//Check that the shape shifter doesn't match the outline
+					while(_shapeShift == outlines[shapeShifterID].tag)
+					{						
+						_newShapeID = Random.Range(0,SpawnManager.instance.outlinePrefabs.Length);
+						_shapeShift = PullObjectTag(_newShapeID);
+					}
+
+					//Add Generated Tag to List
+					outlineTags.Add(_shapeShift);  
+
+					Debug.Log("A");
+//
+//					//If checks are fine then pull Shape Shifter
+					_shapeShifter = PullShapeShifter(_shapeShift);
+
+					Debug.Log("B");
+
+					//Position Shape Shifter
+					_shapeShifter.transform.parent = _levelHolder.transform;
+
+					Debug.Log("C");
+					_shapeShifter.transform.localPosition = shapeShifterSpawnPos[shapeShifterID];
+					Debug.Log("D");
+					shapeShifterPos.Add(shapeShifterSpawnPos[shapeShifterID]);
+					Debug.Log("E");
+
+					//Assign Random Colour
+					_shapeShifter.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 5)];
+					Debug.Log("F");
+					_shapeShifter.SetActive(true);
+
+					//break;
+				}                
             }
         }
 

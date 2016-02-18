@@ -29,7 +29,7 @@ public class OutlineBehaviour : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		Color _objectsColour = other.GetComponent<SpriteRenderer>().color;
+		//Color _objectsColour = other.GetComponent<SpriteRenderer>().color;
 
 		if(gameObject.tag == other.tag)
 		{
