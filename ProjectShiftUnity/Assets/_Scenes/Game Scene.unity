@@ -680,13 +680,18 @@ MonoBehaviour:
   - {x: 0, y: -14.5, z: 0}
   - {x: -14.5, y: 0, z: 0}
   shapeShifterSpawnPos:
-  - {x: 0, y: 7.25, z: 0}
-  - {x: 7.25, y: 0, z: 0}
-  - {x: 0, y: -7.25, z: 0}
-  - {x: -7.25, y: 0, z: 0}
+  - {x: 0, y: -2.5, z: 0}
+  - {x: -2.5, y: 0, z: 0}
+  - {x: 0, y: 2.5, z: 0}
+  - {x: 2.5, y: 0, z: 0}
   levelHolderSpawns:
   - {x: 0, y: -14, z: 0}
   - {x: 40, y: -14, z: 0}
+  shapeShifterSprites:
+  - {fileID: 21300000, guid: d56e471cc8963124ba0b18beb768463f, type: 3}
+  - {fileID: 21300000, guid: 5fe1889214d0c4346b585a7071b76cea, type: 3}
+  - {fileID: 21300000, guid: 3562d46fcd3997b4caa12125091fbadb, type: 3}
+  - {fileID: 21300000, guid: 528ad3ed1b833504181294a701beaf40, type: 3}
   levelLimits: 00000000010000000200000003000000040000006400000064000000
   tempWaveNum: 0
 --- !u!1 &619623211
@@ -885,10 +890,10 @@ MonoBehaviour:
   numberOfLHToSpawn: 5
   levelHolders: []
   outlinePrefabs:
-  - {fileID: 194340, guid: 29dcd743c8e44ee408b263cdb46786cb, type: 2}
-  - {fileID: 131250, guid: a097ce9bebc30fa44810bcb8974614df, type: 2}
   - {fileID: 174660, guid: 4acea2a175823db4ea468141a39a8724, type: 2}
+  - {fileID: 194340, guid: 29dcd743c8e44ee408b263cdb46786cb, type: 2}
   - {fileID: 119640, guid: f480bbe4d14d16346b75f831a76b3f8b, type: 2}
+  - {fileID: 131250, guid: a097ce9bebc30fa44810bcb8974614df, type: 2}
   numberOfOutlinesToSpawn: 12
   outlineTidy: {fileID: 685543579}
   outlines: []
@@ -900,14 +905,6 @@ MonoBehaviour:
   numberOfShapesToSpawn: 12
   shapeTidy: {fileID: 833728350}
   shapes: []
-  shapeShifterPrefabs:
-  - {fileID: 184912, guid: 5ddf6f1d5dd8e7a4eb7100bdd78d26b0, type: 2}
-  - {fileID: 146482, guid: d7964542181fb2a42873ad540b18fcba, type: 2}
-  - {fileID: 177888, guid: 4bb607ec03092cb458e89cb8d0633486, type: 2}
-  - {fileID: 176592, guid: f2bc461baac0d3e47b2b8f060a2f45f3, type: 2}
-  numberOfShapeShiftersToSpawn: 12
-  shapeShiftTidy: {fileID: 798907951}
-  shapeShifters: []
 --- !u!1 &769112436
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,4 +1643,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c950d5191f245b468b2fcf5a8bed283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingTime: 30
+  startingTime: 5

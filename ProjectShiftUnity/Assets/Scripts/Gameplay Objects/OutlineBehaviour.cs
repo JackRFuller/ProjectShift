@@ -50,13 +50,12 @@ public class OutlineBehaviour : MonoBehaviour {
 			LevelManager.instance.IncremementScore();
 
             LevelHolderBehaviour lhScript = transform.parent.root.GetComponent<LevelHolderBehaviour>();
-            lhScript.StartMoving(1);
-            WaveManager.instance.BringInNextLevel();
+            lhScript.StartMoving(1);           
 						
 		}
 		else
 		{
-			Destroy(other.gameObject);
+			//Destroy(other.gameObject);
 		}
 	}
 

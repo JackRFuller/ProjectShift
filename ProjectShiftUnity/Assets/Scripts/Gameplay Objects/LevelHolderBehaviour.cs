@@ -50,20 +50,32 @@ public class LevelHolderBehaviour : MonoBehaviour {
         if(percentageComplete >= 1.0F)
         {
             isLerping = false;
+
             if(_endPos == targetPos[1])
             {
                 for(int i = 0; i <transform.childCount; i++)
                 {
-                    if(transform.GetChild(i).childCount > 0)
+                    Transform childedObject = transform.GetChild(i);
+
+                    if (childedObject.gameObject.name.Contains("Player"))
                     {
+                        GameObject _newPlayer = transform.GetChild(i).gameObject;
+                        _newPlayer.transform.parent = null;
                         //Reset Player Shape
-                        PlayerController pcScript = transform.GetChild(i).GetChild(0).GetComponent<PlayerController>();
+                        PlayerController pcScript = _newPlayer.GetComponent<PlayerController>();
                         pcScript.ResetShape();                     
                         
                     }
-                    transform.GetChild(i).gameObject.SetActive(false);
+
+                    childedObject.parent = null;
+                    childedObject.gameObject.SetActive(false);
+                    
                 }
+
                 gameObject.SetActive(false);
+
+                WaveManager.instance.BringInNextLevel();
+
             }
         }
     }

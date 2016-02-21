@@ -11,6 +11,7 @@ public class WaveManager : MonoBehaviour {
     public Vector3[] outlineSpawnPos = new Vector3[4];
     public Vector3[] shapeShifterSpawnPos = new Vector3[4];
     public Vector3[] levelHolderSpawns = new Vector3[2];
+    public Sprite[] shapeShifterSprites = new Sprite[4];
 
     [Header("Level Balancing Attributes")]
     public int[] levelLimits = new int[5];
@@ -25,10 +26,7 @@ public class WaveManager : MonoBehaviour {
     private List<int> generatedShapeShifters = new List<int>();
 
     //Shape Shifter Lists
-    private List<GameObject> outlines = new List<GameObject>();
-    private List<string> outlineTags = new List<string>();
-    private List<Vector3> shapeShifterPos = new List<Vector3>();
-
+    private List<GameObject> outlines = new List<GameObject>();   
     void Awake()
     {
         if (instance == null)
@@ -52,9 +50,13 @@ public class WaveManager : MonoBehaviour {
    public void DetermineLevelType()
     {
         //DebugText
-        ManagerForDebugs.instance.WaveInit();     
+        ManagerForDebugs.instance.WaveInit();
 
-        if(levels.Count < 2)
+        outlines.Clear();
+        generatedOutlines.Clear();
+        generatedOutlinePos.Clear();
+
+        if (levels.Count < 2)
         {
             for (int i = 0; i < levelLimits.Length; i++)
             {
@@ -72,7 +74,7 @@ public class WaveManager : MonoBehaviour {
     void LoadInLevelType(int _levelID)
     {
 		int _numOfOutlines = 0;
-        bool isGeneratingShapeShifters = true;
+        bool isGeneratingShapeShifters = false;
 
         switch (_levelID)
         {
@@ -100,6 +102,13 @@ public class WaveManager : MonoBehaviour {
 
     public void BringInNextLevel()
     {
+        for (int i = 0; i < levels[0].transform.childCount; i++)
+        {
+            levels[0].transform.GetChild(i).parent = null;
+        }
+
+        levels[0].SetActive(false);
+
         levels.RemoveAt(0);
         playerShapes.RemoveAt(0);
         levels[0].SetActive(true);
@@ -110,7 +119,7 @@ public class WaveManager : MonoBehaviour {
         DetermineLevelType();
     }
 
-	void WaveGenerator(int numOfOutlines, bool isGeneratingShapeShifters)
+    void WaveGenerator(int numOfOutlines, bool isGeneratingShapeShifters)
 	{
 		tempWaveNum++;
 
@@ -119,6 +128,11 @@ public class WaveManager : MonoBehaviour {
         		
 		//Generate Level Holder
 		GameObject _levelHolder = LevelHolder();
+
+        if(_levelHolder == null)
+        {
+            Debug.Log("Lack of Level Holders");
+        }
 
 		//Generate Outline
 		GameObject outline;
@@ -145,8 +159,11 @@ public class WaveManager : MonoBehaviour {
 			//Check if an outlines has been generated and added to the list
 			if(generatedOutlines.Count == 0)
 			{
-				//Assign Outline's Transform to Level Holder
-				outline.transform.parent = _levelHolder.transform;
+                //Assign Outline's Transform to Level Holder    
+                
+                outline.transform.parent = _levelHolder.transform;
+                        
+				
 
 				//Choose A Random Position to Outline
 				int _outlinePos = Random.Range(0, outlineSpawnPos.Length);
@@ -194,7 +211,7 @@ public class WaveManager : MonoBehaviour {
 
 				//Assign Generated Position
 				outline.transform.localPosition = outlineSpawnPos[_outlinePos];
-
+               
 				//Choose a Random Colour for the Outline
 				_generatedColour = objectColours[Random.Range(1, 5)];
 
@@ -216,102 +233,72 @@ public class WaveManager : MonoBehaviour {
         //Spawn In Shape Shifters
         if(isGeneratingShapeShifters)
         {
-            //Choose Correct Shape for shifting
-            int _correctShapeShift = Random.Range(0, generatedOutlines.Count);
+            //Choose the correct combo of shape shifter and outline
+            int _shapeShifterID = Random.Range(0, generatedOutlines.Count);
 
-            //Add Correct Shape To the list
-            generatedShapeShifters.Add(_correctShapeShift);
+            GameObject _shapeShifter = outlines[_shapeShifterID].transform.GetChild(0).gameObject;
 
-            //Pull Shape Shift To Spawn
-            string _shapeShift = outlines[_correctShapeShift].tag;
+            GameObject _correctShapeShifter = _shapeShifter;
 
-            //Add Generated Tag to List
-            outlineTags.Add(_shapeShift);       
+            //Set Shape Shifter Sprite
+            _shapeShifter.GetComponent<SpriteRenderer>().sprite = PullShapeShifterSprite(outlines[_shapeShifterID].tag);
 
-            GameObject _shapeShifter = PullShapeShifter(_shapeShift);           
+            //Set Shape Shifter Tag
+            _shapeShifter.GetComponent<ShapeShifterBehaviour>().shapeTag = outlines[_shapeShifterID].tag;
 
-            //Determine Position To Spawn
-            for(int i =0; i < outlineSpawnPos.Length; i++)
+            //Set Shape Shifter Position
+            for (int i =0; i < outlineSpawnPos.Length; i++)
             {
-                if(outlines[_correctShapeShift].transform.localPosition == outlineSpawnPos[i])
+                if(outlines[_shapeShifterID].transform.localPosition == outlineSpawnPos[i])
                 {
-                    //Assign To Level Holder
-                    _shapeShifter.transform.parent = _levelHolder.transform;
                     _shapeShifter.transform.localPosition = shapeShifterSpawnPos[i];
-                    shapeShifterPos.Add(shapeShifterSpawnPos[i]);
-                    break;
                 }
             }
 
-            //Assign Random Colour
-            _shapeShifter.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 5)];
+            //Set Random Colour
+            _shapeShifter.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 4)];
 
-            //Set Shape Shifter As Active
-            _shapeShifter.SetActive(true);
-
-			Debug.Log(generatedOutlines.Count);
-
-            //Check that there isn't just one outline
+            _shapeShifter.SetActive(true);  
+            
             if(generatedOutlines.Count > 1)
             {
-				//Determine the number of remaining outlines
-				int numOfRemainingOutlines = generatedOutlines.Count;
+                for (int j = 0; j < generatedOutlines.Count; j++)
+                {
+                    if (outlines[j].transform.GetChild(0).gameObject != _correctShapeShifter)
+                    {
+                        _shapeShifter = outlines[j].transform.GetChild(0).gameObject;
 
-				for(int j = 0; j < numOfRemainingOutlines;j++)
-				{
-					//Pull Outline to Place Shape Shifter
-					int shapeShifterID = Random.Range(0,generatedOutlines.Count);
-					_shapeShift = outlines[shapeShifterID].tag;
+                        //Pick a Random Shape Tag
+                        string _shapeShifterTag = PullObjectTag(Random.Range(0, 4));
 
+                        while(outlines[j].tag == _shapeShifterTag)
+                        {
+                            _shapeShifterTag = PullObjectTag(Random.Range(0, 4));
+                        }                        
 
-					//Check that that Outline doesn't already have a shape shifter assigned to it
-					while(outlineTags.Contains(_shapeShift))
-					{
-						shapeShifterID = Random.Range(0,generatedOutlines.Count);
-						_shapeShift = outlines[shapeShifterID].tag;	
-					}
+                        //Set Shape Shifter Sprite
+                        _shapeShifter.GetComponent<SpriteRenderer>().sprite = PullShapeShifterSprite(_shapeShifterTag);
 
-					int _newShapeID = shapeShifterID;
+                        //Set Shape Shifter Tag
+                        _shapeShifter.GetComponent<ShapeShifterBehaviour>().shapeTag = _shapeShifterTag;
 
-					//Check that the shape shifter doesn't match the outline
-					while(_shapeShift == outlines[shapeShifterID].tag)
-					{						
-						_newShapeID = Random.Range(0,SpawnManager.instance.outlinePrefabs.Length);
-						_shapeShift = PullObjectTag(_newShapeID);
-					}
+                        //Set Random Colour
+                        _shapeShifter.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 4)];
 
-					//Add Generated Tag to List
-					outlineTags.Add(_shapeShift);  
+                        //Set Shape Shifter Position
+                        for (int i = 0; i < outlineSpawnPos.Length; i++)
+                        {
+                            if (outlines[j].transform.localPosition == outlineSpawnPos[i])
+                            {
+                                _shapeShifter.transform.localPosition = shapeShifterSpawnPos[i];
+                            }
+                        }
 
-					Debug.Log("A");
-//
-//					//If checks are fine then pull Shape Shifter
-					_shapeShifter = PullShapeShifter(_shapeShift);
-
-					Debug.Log("B");
-
-					//Position Shape Shifter
-					_shapeShifter.transform.parent = _levelHolder.transform;
-
-					Debug.Log("C");
-					_shapeShifter.transform.localPosition = shapeShifterSpawnPos[shapeShifterID];
-					Debug.Log("D");
-					shapeShifterPos.Add(shapeShifterSpawnPos[shapeShifterID]);
-					Debug.Log("E");
-
-					//Assign Random Colour
-					_shapeShifter.GetComponent<SpriteRenderer>().color = objectColours[Random.Range(1, 5)];
-					Debug.Log("F");
-					_shapeShifter.SetActive(true);
-
-					//break;
-				}                
-            }
+                        _shapeShifter.SetActive(true);
+                    }                   
+                }
+            }          
         }
-
-        outlines.Clear();
-        generatedOutlines.Clear();
-        generatedOutlinePos.Clear();
 
         //Pull Player Shape & Set Pos
         GameObject playerShape = PullPlayerShape(_outlineTag);
@@ -332,8 +319,6 @@ public class WaveManager : MonoBehaviour {
 			//Adds Level To List
 			levels.Add(_levelHolder);
 			DetermineLevelType();
-
-
 		}
 		else
 		{
@@ -343,8 +328,6 @@ public class WaveManager : MonoBehaviour {
 			//Adds Level To List
 			levels.Add(_levelHolder);
 		}
-
-       
 	}
 
     void DetermineIfNextLevelShouldBeSpawnedIn()
@@ -355,26 +338,29 @@ public class WaveManager : MonoBehaviour {
         }
     }
 
-    GameObject PullShapeShifter(string shapeShifterID)
+    Sprite PullShapeShifterSprite(string _shapeShifterTag)
     {
-        GameObject _shapeShifter = null;
 
-        for (int i = 0; i < SpawnManager.instance.shapeShifters.Count; i++)
+        Sprite _shapeShifterSprite = null;
+
+        switch (_shapeShifterTag)
         {
-            ShapeShifterBehaviour ssb = SpawnManager.instance.shapeShifters[i].GetComponent<ShapeShifterBehaviour>();
-
-            if(ssb.shapeTag == shapeShifterID)
-            {
-                if (!SpawnManager.instance.shapeShifters[i].activeInHierarchy)
-                {                    
-                    _shapeShifter = SpawnManager.instance.shapeShifters[i];
-                    return _shapeShifter;
-                }
-            }
+            case ("Hexagon"):
+                _shapeShifterSprite = shapeShifterSprites[0];
+                break;
+            case ("Square"):
+                _shapeShifterSprite = shapeShifterSprites[1];
+                break;
+            case ("Triangle"):
+                _shapeShifterSprite = shapeShifterSprites[2];
+                break;
+            case ("Star"):
+                _shapeShifterSprite = shapeShifterSprites[3];
+                break;
         }
 
-        return _shapeShifter;
-    }
+        return _shapeShifterSprite;
+    }    
 
     GameObject PullPlayerShape(string playerShapeID)
     {
@@ -429,6 +415,7 @@ public class WaveManager : MonoBehaviour {
                 if (!SpawnManager.instance.outlines[i].activeInHierarchy)
                 {
                     outline = SpawnManager.instance.outlines[i];
+                    
                     return outline;
                 }
                     
@@ -447,10 +434,10 @@ public class WaveManager : MonoBehaviour {
             if (!SpawnManager.instance.levelHolders[i].activeInHierarchy)
             {
                 levelHolder = SpawnManager.instance.levelHolders[i];
-                levelHolder.transform.position = new Vector3(0, -14, 0);
-                return levelHolder;
+                levelHolder.transform.position = new Vector3(0, -14, 0); 
             }
         }
+
 
         return levelHolder;
             

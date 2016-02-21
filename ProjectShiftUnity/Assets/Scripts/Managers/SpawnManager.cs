@@ -15,19 +15,13 @@ public class SpawnManager : MonoBehaviour {
     public GameObject[] outlinePrefabs = new GameObject[4];
     [SerializeField] private int numberOfOutlinesToSpawn;
     public GameObject outlineTidy;
-    [HideInInspector] public List<GameObject> outlines;
+    public List<GameObject> outlines;
 
     [Header("Player Shapes")]
     public GameObject[] shapePrefabs = new GameObject[4];
     [SerializeField] private int numberOfShapesToSpawn;
     public GameObject shapeTidy;
     [HideInInspector] public List<GameObject> shapes;
-
-    [Header("Shape Shifters")]
-    public GameObject[] shapeShifterPrefabs = new GameObject[4];
-    [SerializeField] private int numberOfShapeShiftersToSpawn;
-    public GameObject shapeShiftTidy;
-    public List<GameObject> shapeShifters;
 
     void Awake()
     {
@@ -67,7 +61,7 @@ public class SpawnManager : MonoBehaviour {
 
         SpawnInPlayerShapes();
 
-        SpawnInShapeShifters();
+        //SpawnInShapeShifters();
     }
 
     void SpawnInLevelHolders()
@@ -120,32 +114,13 @@ public class SpawnManager : MonoBehaviour {
             }
         }
 
-      
-    }
-
-    void SpawnInShapeShifters()
-    {
-        shapeShifters = new List<GameObject>();
-
-        for(int i = 0; i < shapeShifterPrefabs.Length; i++)
-        {
-            for (int j = 0; j < numberOfShapeShiftersToSpawn; j++)
-            {
-                GameObject _shapeShifter = Instantiate(shapeShifterPrefabs[i]) as GameObject;
-                _shapeShifter.transform.parent = shapeShiftTidy.transform;
-                _shapeShifter.transform.localPosition = Vector3.zero;
-                shapeShifters.Add(_shapeShifter);
-                _shapeShifter.SetActive(false);
-                
-            }
-        }
-
         //DebugPooledItems
         ManagerForDebugs.instance.SpawnedObjects();
 
         //Test
         WaveManager.instance.DetermineLevelType();
-    }
+
+    }   
 
     void ResetOutlines()
     {
@@ -174,16 +149,6 @@ public class SpawnManager : MonoBehaviour {
             levelHolders[i].transform.position = new Vector3(0, -14, 0);
             levelHolders[i].SetActive(false);
         }
-    }
-
-    void ResetShapeHolders()
-    {
-        for(int i = 0; i < shapeShifters.Count; i++)
-        {
-            shapeShifters[i].transform.parent = shapeShiftTidy.transform;
-            shapeShifters[i].transform.localPosition = Vector3.zero;
-            shapeShifters[i].SetActive(false);
-        }
-    }
+    }  
 	
 }
